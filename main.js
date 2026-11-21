@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 
-const V = '2';
+const V = '3';
 const stage = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -244,9 +244,9 @@ const ORD=[
 ];
 const pickables=[];
 ORD.forEach((o,i)=>{
-  scene.add(steps(o.x));
-  const col=o.make(); col.position.set(o.x,0.54,0); scene.add(col); o.col=col;
-  o.capY=0.54+col.userData.capY; o.topY=0.54+col.userData.top;
+  // v3: no stepped blocks under any column; Doric shaft stands directly on the ground/stylobate
+  const col=o.make(); col.position.set(o.x,0,0); scene.add(col); o.col=col;
+  o.capY=col.userData.capY; o.topY=col.userData.top;
   const lb=label(o.zh,o.en); lb.position.set(o.x,o.topY+0.75,0); scene.add(lb); o.lb=lb;
   const card=figureCard(o.fig,o.cap,5.6,o.ar); card.position.set(o.x+2.7,0,0.9); scene.add(card); o.card=card;
   col.traverse(m=>{if(m.isMesh){m.userData.order=i;pickables.push(m);}});
@@ -295,7 +295,7 @@ const T=[
 <dt>代表建築與所在地 Landmark</dt><dd>帕德嫩神廟・雅典衛城，西元前 447–432 年（主體前 438 年完成，雕刻到前 432 年）。<div class="en">Parthenon, Acropolis of Athens, 447–432 BC</div></dd>
 <dt>隱喻形象 Metaphor</dt><dd>維特魯威《建築十書》第 4 卷：多立克柱取男子身體比例，表現力量與樸實。這裡用阿波羅型男子示意。<div class="en">Vitruvius, Book IV: proportions of a man</div></dd>
 <dt>意涵 Meaning</dt><dd>力量、陽剛<div class="en">Strength, masculinity</div></dd>
-<dt>風格特色 Features</dt><dd>沒有柱礎，直接立在台基上；柱身粗壯、20 條尖稜凹槽；柱頭是圓墊狀的「鐘形托」加方形「頂板」。<div class="en">No base; stout shaft with 20 sharp-edged flutes; cushion echinus + square abacus</div></dd>
+<dt>風格特色 Features</dt><dd>沒有柱礎（底座），柱身直接立在地面（台基）上，下面不墊任何方塊；柱身粗壯、20 條尖稜凹槽；柱頭是圓墊狀的「鐘形托」加方形「頂板」。<div class="en">No base — the shaft stands directly on the stylobate; stout shaft with 20 sharp-edged flutes; cushion echinus + square abacus</div></dd>
 </dl>
 <div class="figs"><figure><img src="assets/fig_doric_color.png?v=${V}" alt="阿波羅型男子示意"><figcaption>阿波羅型男子（彩色示意插畫）</figcaption></figure></div>
 <figure><img src="assets/tem_parthenon.jpg?v=${V}" alt="帕德嫩神廟照片" loading="lazy"><figcaption>帕德嫩神廟 Parthenon（照片：Steve Swayne，CC BY 2.0）</figcaption></figure>
