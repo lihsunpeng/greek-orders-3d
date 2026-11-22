@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 
-const V = '3';
+const V = '4';
 const stage = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -323,7 +323,7 @@ ${credit}`,
 <dt>意涵 Meaning</dt><dd>華麗、重生<div class="en">Splendour, rebirth</div></dd>
 <dt>風格特色 Features</dt><dd>三種柱式中最修長；鐘形柱頭包著莨苕葉，四角有細渦卷，頂板四邊內凹。<div class="en">Slenderest; bell capital with acanthus, corner helices, concave abacus</div></dd>
 </dl>
-<div class="figs"><figure><img src="assets/fig_corinth_color.png?v=${V}" alt="頭頂花籃少女示意"><figcaption>頭頂花籃少女（彩色示意插畫）</figcaption></figure><figure><img src="assets/col_lysicrates.jpg?v=${V}" alt="列西克拉特斯型柯林斯柱示意"><figcaption>列西克拉特斯型柱（示意插畫）</figcaption></figure></div>
+<div class="figs"><figure><img src="assets/fig_corinth_color.png?v=${V}" alt="頭頂花籃少女示意"><figcaption>頭頂花籃少女（彩色示意插畫）</figcaption></figure><figure><img src="assets/col3d_corinth.png?v=${V}" alt="本站 3D 柯林斯柱（列西克拉特斯型）"><figcaption>本站 3D 柯林斯柱（列西克拉特斯型）</figcaption></figure></div>
 <figure><img src="assets/tem_olympieion.jpg?v=${V}" alt="奧林匹亞宙斯神廟照片" loading="lazy"><figcaption>奧林匹亞宙斯神廟 Olympieion（照片：A. Savin，CC BY-SA 3.0）</figcaption></figure>
 ${credit2}`,
 `<h2>出處<small>Sources & credits</small></h2>
@@ -333,17 +333,43 @@ ${credit}${credit2}
 <div class="ref">Vitruvius. (1914). <i>The ten books on architecture</i> (M. H. Morgan, Trans.). Harvard University Press. (Original work published ca. 30–15 BC)</div>
 <p><b>軟體 Software</b></p>
 <div class="ref">three.js authors. (2023). <i>three.js</i> (Version r160) [Computer software]. <a href="https://threejs.org/" target="_blank" rel="noopener">https://threejs.org/</a> (MIT License)</div>
-<p class="note">3D 柱子是用程式建出的示意模型，比例參考維特魯威，細節為簡化版；柱頭的彩繪是參考古希臘神廟原本有上色的示意配色。彩色人物、柱子插畫與阿提米絲神廟復原圖都是示意插畫，不是照片。<br><span class="en">3D columns are simplified procedural models; other images are illustrations.</span></p>
-<figure><a href="assets/table.jpg?v=${V}" target="_blank" rel="noopener"><img src="assets/table.jpg?v=${V}" alt="希臘三柱式比較表" loading="lazy"></a><figcaption>希臘三柱式比較表（點圖看大圖）</figcaption></figure>`
+<p class="note">3D 柱子是用程式建出的示意模型，比例參考維特魯威，細節為簡化版；柱頭的彩繪是參考古希臘神廟原本有上色的示意配色。彩色人物與阿提米絲神廟復原圖是示意插畫，不是照片。<br><span class="en">3D columns are simplified procedural models; figures and the Artemis reconstruction are illustrations.</span></p>
+<p>整理成一張表的講義請看「講義」分頁。<span class="en">See the Handout tab for the summary table.</span></p>`,
+`<h2>講義<small>Handout</small></h2>
+<p>希臘三柱式比較表（彩色 3D 版）：柱式是本站的 3D 模型、人物是彩色插畫，年代、地點、距離都和說明面板一致。<span class="en">Summary table — colour 3D edition.</span></p>
+<button class="lbopen" data-lb="1">🔍 放大檢視講義 <small>Open &amp; zoom</small></button>
+<figure><img class="lbthumb" data-lb="1" src="assets/table_v4.jpg?v=${V}" alt="希臘三柱式比較表（彩色 3D 版）" loading="lazy"><figcaption>點圖放大；可用雙指或＋／－縮放，拖曳移動。Tap to open, pinch or ＋／－ to zoom.</figcaption></figure>
+<p><a href="assets/table_v4.jpg?v=${V}" target="_blank" rel="noopener">開啟原圖（1860×2990）Full-size image</a></p>`
 ];
 const body=document.getElementById('body');
 const tabs=[...document.querySelectorAll('#tabs button')];
-function showTab(k){ body.innerHTML=T[k==='src'?3:k]; body.scrollTop=0; tabs.forEach(b=>b.classList.toggle('on',b.dataset.tab===String(k))); }
-tabs.forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.tab; if(k==='src'){showTab('src');return;} sel=+k; showTab(sel); go(sel); setOn(sel);}));
+function showTab(k){ body.innerHTML=T[k==='src'?3:k==='hand'?4:k]; body.scrollTop=0; tabs.forEach(b=>b.classList.toggle('on',b.dataset.tab===String(k))); }
+tabs.forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.tab; if(k==='src'||k==='hand'){showTab(k);return;} sel=+k; showTab(sel); go(sel); setOn(sel);}));
 const panel=document.getElementById('panel'), fold=document.getElementById('fold');
 fold.addEventListener('click',()=>{panel.classList.toggle('folded'); fold.textContent=panel.classList.contains('folded')?'▴':'▾'; resize();});
 resize();
 showTab(0);
+// ---------- handout lightbox (scroll + pinch / wheel / button zoom) ----------
+const lb=document.getElementById('lb'), lbsc=document.getElementById('lbsc'), lbimg=document.getElementById('lbimg');
+let lz=1;
+function setZ(z,cx,cy){ z=Math.max(1,Math.min(5,z)); const r=lbsc.getBoundingClientRect(); cx??=r.width/2; cy??=r.height/2;
+  const fx=(lbsc.scrollLeft+cx)/lbsc.scrollWidth, fy=(lbsc.scrollTop+cy)/lbsc.scrollHeight; lz=z; lbimg.style.width=(z*100)+'%';
+  lbsc.scrollLeft=fx*lbsc.scrollWidth-cx; lbsc.scrollTop=fy*lbsc.scrollHeight-cy; document.getElementById('lbz').textContent=Math.round(z*100)+'%'; }
+function openLB(){ lbimg.src='assets/table_v4.jpg?v='+V; lb.hidden=false; setZ(1); lbsc.scrollTop=0; }
+function closeLB(){ lb.hidden=true; }
+body.addEventListener('click',e=>{ if(e.target.closest('[data-lb]')) openLB(); });
+document.getElementById('lbclose').onclick=closeLB;
+document.getElementById('lbplus').onclick=()=>setZ(lz*1.5);
+document.getElementById('lbminus').onclick=()=>setZ(lz/1.5);
+addEventListener('keydown',e=>{ if(e.key==='Escape') closeLB(); });
+lbsc.addEventListener('wheel',e=>{ if(!e.ctrlKey) return; e.preventDefault(); const r=lbsc.getBoundingClientRect(); setZ(lz*Math.exp(-e.deltaY*0.01),e.clientX-r.left,e.clientY-r.top); },{passive:false});
+let pinch=null, lastTap=0;
+lbsc.addEventListener('touchstart',e=>{ if(e.touches.length===2){ const [a,b]=e.touches; pinch={d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),z:lz}; }
+  else if(e.touches.length===1){ const t=Date.now(); if(t-lastTap<300){ const r=lbsc.getBoundingClientRect(); setZ(lz>1.2?1:2.5,e.touches[0].clientX-r.left,e.touches[0].clientY-r.top); } lastTap=t; } },{passive:true});
+lbsc.addEventListener('touchmove',e=>{ if(pinch&&e.touches.length===2){ e.preventDefault(); const [a,b]=e.touches; const r=lbsc.getBoundingClientRect();
+  setZ(pinch.z*Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)/pinch.d,(a.clientX+b.clientX)/2-r.left,(a.clientY+b.clientY)/2-r.top); } },{passive:false});
+lbsc.addEventListener('touchend',e=>{ if(e.touches.length<2) pinch=null; });
+window.__openLB=openLB; window.__setZ=setZ;
 
 // ---------- loop ----------
 function resize(){ const w=innerWidth,h=innerHeight; renderer.setSize(w,h); camera.aspect=w/h;
